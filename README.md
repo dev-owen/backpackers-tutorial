@@ -3,7 +3,22 @@
 ## Travel advice web application
 
 ### Frontend
-Vue.js
+- <b>Vue.js</b>
+- Vuex, Vue-router
+- Sass (CSS Pre-processor)
 
 ### Backend
-Node.js
+- <b>Node.js</b>
+- Express
+- MongoDB
+
+### Language
+- JavaScript(ES6)
+- TypeScript
+
+### Test
+- Jest
+- Nightwatch
+
+### Infra
+- Docker
