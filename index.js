@@ -12,29 +12,31 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-	res.json({
-		message: 'Behold The MEVN Stack!'
-	});
+    res.json({
+        message: 'Behold The MEVN Stack!',
+    });
 });
 
 app.get('/messages', (req, res) => {
-	messages.getAll().then((messages) => {
-		res.json(messages);
-	});
+    messages.getAll().then((messages) => {
+        res.json(messages);
+    });
 });
 
 app.post('/messages', (req, res) => {
-	console.log(req.body);
-	messages.create(req.body).then((message) => {
-		res.json(message);
-	}).catch((error) => {
-		res.status(500);
-		res.json(error);
-	});
+    console.log(req.body);
+    messages
+        .create(req.body)
+        .then((message) => {
+            res.json(message);
+        })
+        .catch((error) => {
+            res.status(500);
+            res.json(error);
+        });
 });
-
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
-	console.log(`listening on ${port}`);
+    console.log(`listening on ${port}`);
 });
