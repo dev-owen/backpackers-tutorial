@@ -24,7 +24,6 @@ app.get('/messages', (req, res) => {
 });
 
 app.post('/messages', (req, res) => {
-    console.log(req.body);
     messages
         .create(req.body)
         .then((message) => {
