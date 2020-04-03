@@ -22,7 +22,7 @@ function create(message) {
     const result = Joi.validate(message, schema);
     if (result.error == null) {
         message.created = new Date();
-        console.log('not error');
+        console.log('not error', message);
         return messages.insert(message);
     } else {
         console.log('error');

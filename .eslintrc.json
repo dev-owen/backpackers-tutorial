@@ -5,7 +5,7 @@
         "amd": true,
         "node": true
     },
-    "extends": ["eslint:recommended", "prettier"],
+    "extends": ["eslint:recommended", "prettier", "plugin:vue/essential"],
     "globals": {
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly"
@@ -15,6 +15,16 @@
         "sourceType": "module"
     },
     "rules": {
-        "no-console": "off"
-    }
+        "no-console": "off",
+//        "indent": ["error", 4],
+        "vue/script-indent": ["error", 4, { "baseIndent": 1 }]
+    },
+    "overrides": [
+        {
+            "files": ["*.vue"],
+            "rules": {
+                "indent": "off"
+            }
+        }
+    ]
 }
