@@ -26,20 +26,20 @@
 const API_URL = 'http://localhost:4000/messages';
 
 export default {
-    name: 'home',
-    data: () => ({
-        error: '',
-        messages: [],
-    }),
+  name: 'home',
+  data: () => ({
+    error: '',
+    messages: [],
+  }),
 
-    mounted() {
-        fetch(API_URL)
-            .then((response) => response.json())
-            .then((result) => {
-                this.messages = result;
-            });
-    },
-    methods: {},
+  mounted() {
+    fetch(API_URL)
+      .then((response) => response.json())
+      .then((result) => {
+        this.messages = result;
+      });
+  },
+  methods: {},
 };
 </script>
 
