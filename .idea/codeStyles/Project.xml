@@ -1,5 +1,6 @@
 <component name="ProjectCodeStyleConfiguration">
   <code_scheme name="Project" version="173">
+    <option name="AUTODETECT_INDENTS" value="false" />
     <HTMLCodeStyleSettings>
       <option name="HTML_DO_NOT_INDENT_CHILDREN_OF" value="html,body,thead,tbody,tfoot,script" />
     </HTMLCodeStyleSettings>
@@ -38,7 +39,6 @@
       <option name="SOFT_MARGINS" value="80" />
       <indentOptions>
         <option name="USE_TAB_CHARACTER" value="true" />
-        <option name="SMART_TABS" value="true" />
       </indentOptions>
     </codeStyleSettings>
     <codeStyleSettings language="SASS">
