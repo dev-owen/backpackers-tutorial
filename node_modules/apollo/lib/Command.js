@@ -16,6 +16,7 @@ const path_1 = require("path");
 const apollo_language_server_1 = require("apollo-language-server");
 const OclifLoadingHandler_1 = require("./OclifLoadingHandler");
 const vscode_uri_1 = __importDefault(require("vscode-uri"));
+const chalk_1 = __importDefault(require("chalk"));
 const { version, referenceID } = require("../package.json");
 const headersArrayToObject = (arr) => {
     if (!arr)
@@ -64,7 +65,11 @@ class ProjectCommand extends command_1.default {
             this.exit(1);
             return;
         }
-        config.tag = flags.tag || config.tag || "current";
+        config.variant = flags.variant || flags.tag || config.variant;
+        config.graph = flags.graph || apollo_language_server_1.getGraphIdFromConfig(config.rawConfig);
+        if (flags.tag) {
+            console.warn(chalk_1.default.yellow("Using the --tag flag is deprecated. Please use --variant (or -v) instead."));
+        }
         config.setDefaults({
             engine: {
                 apiKey: flags.key,
@@ -101,6 +106,10 @@ class ProjectCommand extends command_1.default {
         if (this.configMap) {
             const defaults = this.configMap(flags);
             config.setDefaults(defaults);
+        }
+        const [tokenType, identifier] = (config.engine.apiKey && config.engine.apiKey.split(":")) || [];
+        if (tokenType == "service" && identifier !== config.graph) {
+            throw new Error(`Cannot specify a service token that does not match graph. Graph ${config.graph} does not match graph from token (${identifier})`);
         }
         return config;
     }
@@ -167,18 +176,18 @@ ProjectCommand.flags = {
         description: "Additional header to send to server for introspectionQuery. May be used multiple times to add multiple headers. NOTE: The `--endpoint` flag is REQUIRED if using the `--header` flag."
     }),
     endpoint: command_1.flags.string({
-        description: "The url of your service"
+        description: "The URL for the CLI use to introspect your service"
     }),
     key: command_1.flags.string({
-        description: "The API key for the Apollo Engine service",
-        default: () => process.env.ENGINE_API_KEY
+        description: "The API key to use for authentication to Apollo Graph Manager",
+        default: () => process.env.APOLLO_KEY || process.env.ENGINE_API_KEY
     }),
     engine: command_1.flags.string({
-        description: "Reporting URL for a custom Apollo Engine deployment",
+        description: "URL for a custom Apollo Graph Manager deployment",
         hidden: true
     }),
     frontend: command_1.flags.string({
-        description: "URL for a custom Apollo Engine frontend",
+        description: "URL for a custom Apollo Graph Manager frontend",
         hidden: true
     })
 };
@@ -222,7 +231,16 @@ ClientCommand.flags = Object.assign(Object.assign({}, ProjectCommand.flags), { c
         description: "The version of the client that the queries will be attached to"
     }), tag: command_1.flags.string({
         char: "t",
-        description: "The published service tag for this client"
+        description: "[Deprecated: please use --variant instead] The tag (AKA variant) of the graph in Apollo Graph Manager to associate this client to",
+        hidden: true,
+        exclusive: ["variant"]
+    }), variant: command_1.flags.string({
+        char: "v",
+        description: "The variant of the graph in Apollo Graph Manager to associate this client to",
+        exclusive: ["tag"]
+    }), graph: command_1.flags.string({
+        char: "g",
+        description: "The ID for the graph in Apollo Graph Manager to operate client commands with. Overrides config file if set."
     }), queries: command_1.flags.string({
         description: "Deprecated in favor of the includes flag"
     }), includes: command_1.flags.string({

@@ -4,7 +4,9 @@ export default class ServiceDownload extends ProjectCommand {
     static aliases: string[];
     static description: string;
     static flags: {
-        tag: flags.IOptionFlag<string>;
+        tag: flags.IOptionFlag<string | undefined>;
+        variant: flags.IOptionFlag<string | undefined>;
+        graph: flags.IOptionFlag<string | undefined>;
         skipSSLValidation: import("@oclif/parser/lib/flags").IBooleanFlag<boolean>;
         config: flags.IOptionFlag<string | undefined>;
         header: flags.IOptionFlag<string | undefined>;

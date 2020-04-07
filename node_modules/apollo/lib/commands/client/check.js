@@ -12,6 +12,7 @@ const path_1 = require("path");
 const apollo_language_server_1 = require("apollo-language-server");
 const chalk_1 = __importDefault(require("chalk"));
 const env_ci_1 = __importDefault(require("env-ci"));
+const sharedMessages_1 = require("../../utils/sharedMessages");
 const { ValidationErrorType } = apollo_language_server_1.graphqlTypes;
 class ClientCheck extends Command_1.ClientCommand {
     constructor() {
@@ -73,8 +74,8 @@ class ClientCheck extends Command_1.ClientCommand {
             {
                 title: "Checking client compatibility with service",
                 task: async (ctx) => {
-                    if (!config.name) {
-                        throw new Error("No service found to link to Apollo Graph Manager. Graph Manager is required for this command.");
+                    if (!config.graph) {
+                        throw sharedMessages_1.graphUndefinedError;
                     }
                     ctx.gitContext = await git_1.gitInfo(this.log);
                     ctx.operations = Object.entries(this.project.mergedOperationsAndFragmentsForService).map(([name, doc]) => ({
@@ -84,8 +85,8 @@ class ClientCheck extends Command_1.ClientCommand {
                         locationOffset: doc.definitions[0].loc.source.locationOffset
                     }));
                     ctx.validationResults = await project.engine.validateOperations({
-                        id: config.name,
-                        tag: config.tag,
+                        id: config.graph,
+                        tag: config.variant,
                         operations: ctx.operations.map(({ body, name }) => ({
                             body,
                             name

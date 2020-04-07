@@ -4,6 +4,8 @@ export default class ServiceList extends ProjectCommand {
     static description: string;
     static flags: {
         tag: flags.IOptionFlag<string | undefined>;
+        variant: flags.IOptionFlag<string | undefined>;
+        graph: flags.IOptionFlag<string | undefined>;
         config: flags.IOptionFlag<string | undefined>;
         header: flags.IOptionFlag<string | undefined>;
         endpoint: flags.IOptionFlag<string | undefined>;

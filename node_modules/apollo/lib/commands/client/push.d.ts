@@ -6,6 +6,8 @@ export default class ClientPush extends ClientCommand {
         clientName: import("@oclif/command/lib/flags").IOptionFlag<string | undefined>;
         clientVersion: import("@oclif/command/lib/flags").IOptionFlag<string | undefined>;
         tag: import("@oclif/command/lib/flags").IOptionFlag<string | undefined>;
+        variant: import("@oclif/command/lib/flags").IOptionFlag<string | undefined>;
+        graph: import("@oclif/command/lib/flags").IOptionFlag<string | undefined>;
         queries: import("@oclif/command/lib/flags").IOptionFlag<string | undefined>;
         includes: import("@oclif/command/lib/flags").IOptionFlag<string | undefined>;
         excludes: import("@oclif/command/lib/flags").IOptionFlag<string | undefined>;

@@ -22,6 +22,7 @@ const getOperationManifestFromProject_1 = require("../../utils/getOperationManif
 const apollo_graphql_1 = require("apollo-graphql");
 const utils_1 = require("../../utils");
 const chalk_1 = __importDefault(require("chalk"));
+const sharedMessages_1 = require("../../utils/sharedMessages");
 class ClientPush extends Command_1.ClientCommand {
     async run() {
         const invalidOperationsErrorMessage = "encountered invalid operations";
@@ -42,14 +43,14 @@ class ClientPush extends Command_1.ClientCommand {
                         }
                     },
                     {
-                        title: `Checked operations against ${chalk_1.default.cyan(config.name + "@" + config.tag)}`,
+                        title: `Checked operations against ${chalk_1.default.cyan(config.graph + "@" + config.variant)}`,
                         task: async () => { }
                     },
                     {
                         title: "Pushing operations to operation registry",
                         task: async (_, task) => {
-                            if (!config.name) {
-                                throw new Error("No service found to link to Apollo Graph Manager. Graph Manager is required for this command.");
+                            if (!config.graph) {
+                                throw sharedMessages_1.graphUndefinedError;
                             }
                             const operationManifest = getOperationManifestFromProject_1.getOperationManifestFromProject(this.project);
                             const signatureToOperation = generateSignatureToOperationMap(this.project, config);
@@ -63,10 +64,10 @@ class ClientPush extends Command_1.ClientCommand {
                                     identifier: referenceID || name,
                                     version
                                 },
-                                id: config.name,
+                                id: config.graph,
                                 operations: operationManifest,
                                 manifestVersion: 2,
-                                graphVariant: config.tag
+                                graphVariant: config.variant
                             };
                             const { operations: _op } = variables, restVariables = __rest(variables, ["operations"]);
                             this.debug("Variables sent to Apollo");

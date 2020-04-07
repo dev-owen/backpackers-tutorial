@@ -4,7 +4,9 @@ export default class ServicePush extends ProjectCommand {
     static aliases: string[];
     static description: string;
     static flags: {
-        tag: flags.IOptionFlag<string>;
+        tag: flags.IOptionFlag<string | undefined>;
+        variant: flags.IOptionFlag<string | undefined>;
+        graph: flags.IOptionFlag<string | undefined>;
         localSchemaFile: flags.IOptionFlag<string | undefined>;
         federated: import("@oclif/parser/lib/flags").IBooleanFlag<boolean>;
         serviceName: flags.IOptionFlag<string | undefined>;

@@ -20,6 +20,7 @@ const graphql_1 = require("graphql");
 const git_1 = require("../../git");
 const Command_1 = require("../../Command");
 const chalk_1 = __importDefault(require("chalk"));
+const sharedMessages_1 = require("../../utils/sharedMessages");
 class ServicePush extends Command_1.ProjectCommand {
     async run() {
         let result;
@@ -29,8 +30,8 @@ class ServicePush extends Command_1.ProjectCommand {
             {
                 title: "Uploading service to Apollo Graph Manager",
                 task: async () => {
-                    if (!config.name) {
-                        throw new Error("No service found to link to Apollo Graph Manager");
+                    if (!config.graph) {
+                        throw sharedMessages_1.graphUndefinedError;
                     }
                     if (flags.federated) {
                         this.log("The --federated flag is no longer required when running federated commands. Use of the flag will not be supported in future versions of the CLI.");
@@ -45,8 +46,8 @@ class ServicePush extends Command_1.ProjectCommand {
                         if (!flags.serviceURL)
                             throw new Error("No URL found for federated service. Please provide the URL for the gateway to reach the service via the --serviceURL flag");
                         const { compositionConfig, errors, didUpdateGateway, serviceWasCreated } = await project.engine.uploadAndComposePartialSchema({
-                            id: config.name,
-                            graphVariant: config.tag,
+                            id: config.graph,
+                            graphVariant: config.variant,
                             name: flags.serviceName,
                             url: flags.serviceURL,
                             revision: flags.serviceRevision ||
@@ -62,16 +63,16 @@ class ServicePush extends Command_1.ProjectCommand {
                             compositionErrors: errors,
                             serviceWasCreated,
                             didUpdateGateway,
-                            graphId: config.name,
-                            graphVariant: config.tag || "current"
+                            graphId: config.graph,
+                            graphVariant: config.variant
                         };
                         return;
                     }
-                    const schema = await project.resolveSchema({ tag: flags.tag });
+                    const schema = await project.resolveSchema({ tag: config.variant });
                     const variables = {
-                        id: config.name,
+                        id: config.graph,
                         schema: graphql_1.introspectionFromSchema(schema).__schema,
-                        tag: flags.tag,
+                        tag: config.variant,
                         gitContext
                     };
                     const { schema: _ } = variables, restVariables = __rest(variables, ["schema"]);
@@ -82,7 +83,7 @@ class ServicePush extends Command_1.ProjectCommand {
                     const response = await project.engine.uploadSchema(variables);
                     if (response) {
                         result = {
-                            graphId: config.name,
+                            graphId: config.graph,
                             graphVariant: response.tag ? response.tag.tag : "current",
                             hash: response.tag ? response.tag.schema.hash : null,
                             code: response.code
@@ -138,11 +139,20 @@ class ServicePush extends Command_1.ProjectCommand {
 }
 exports.default = ServicePush;
 ServicePush.aliases = ["schema:publish"];
-ServicePush.description = "Push a service to Apollo Graph Manager";
+ServicePush.description = "Push a service definition to Apollo Graph Manager";
 ServicePush.flags = Object.assign(Object.assign({}, Command_1.ProjectCommand.flags), { tag: command_1.flags.string({
         char: "t",
-        description: "The tag to publish this service to",
-        default: "current"
+        description: "The tag (AKA variant) to publish your service to in Apollo Graph Manager",
+        hidden: true,
+        exclusive: ["variant"]
+    }), variant: command_1.flags.string({
+        char: "v",
+        description: "The variant to publish your service to in Apollo Graph Manager",
+        hidden: true,
+        exclusive: ["tag"]
+    }), graph: command_1.flags.string({
+        char: "g",
+        description: "The ID of the graph in Apollo Graph Manager to publish your service to. Overrides config file if set."
     }), localSchemaFile: command_1.flags.string({
         description: "Path to one or more local GraphQL schema file(s), as introspection result or SDL. Supports comma-separated list of paths (ex. `--localSchemaFile=schema.graphql,extensions.graphql`)"
     }), federated: command_1.flags.boolean({

@@ -19,6 +19,8 @@ export default class ClientCheck extends ClientCommand {
         clientName: flags.IOptionFlag<string | undefined>;
         clientVersion: flags.IOptionFlag<string | undefined>;
         tag: flags.IOptionFlag<string | undefined>;
+        variant: flags.IOptionFlag<string | undefined>;
+        graph: flags.IOptionFlag<string | undefined>;
         queries: flags.IOptionFlag<string | undefined>;
         includes: flags.IOptionFlag<string | undefined>;
         excludes: flags.IOptionFlag<string | undefined>;

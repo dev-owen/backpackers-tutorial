@@ -10,6 +10,7 @@ const table_1 = require("table");
 const moment_1 = __importDefault(require("moment"));
 const apollo_language_server_1 = require("apollo-language-server");
 const chalk_1 = __importDefault(require("chalk"));
+const sharedMessages_1 = require("../../utils/sharedMessages");
 const formatImplementingService = (implementingService, effectiveDate = new Date()) => {
     return {
         name: implementingService.name,
@@ -48,15 +49,14 @@ function formatHumanReadable({ implementingServices, graphName, frontendUrl }) {
 class ServiceList extends Command_1.ProjectCommand {
     async run() {
         const taskOutput = {};
-        let schema;
         let graphID;
         let graphVariant;
         try {
             await this.runTasks(({ config, flags, project }) => {
-                graphID = config.name;
-                graphVariant = flags.tag || config.tag || "current";
+                graphID = config.graph;
+                graphVariant = config.variant;
                 if (!graphID) {
-                    throw new Error("No service found to link to Apollo Graph Manager");
+                    throw sharedMessages_1.graphUndefinedError;
                 }
                 return [
                     {
@@ -86,7 +86,7 @@ class ServiceList extends Command_1.ProjectCommand {
         }
         this.log(formatHumanReadable({
             implementingServices: taskOutput.implementingServices,
-            graphName: taskOutput.config.name,
+            graphName: taskOutput.config.graph,
             frontendUrl: taskOutput.config.engine.frontend || apollo_language_server_1.DefaultEngineConfig.frontend
         }));
     }
@@ -95,6 +95,15 @@ exports.default = ServiceList;
 ServiceList.description = "List the services in a graph";
 ServiceList.flags = Object.assign(Object.assign({}, Command_1.ProjectCommand.flags), { tag: command_1.flags.string({
         char: "t",
-        description: "The published tag to list the services from"
+        description: "[Deprecated: please use --variant instead] The tag (AKA variant) to list implementing services for",
+        hidden: true,
+        exclusive: ["variant"]
+    }), variant: command_1.flags.string({
+        char: "v",
+        description: "The variant to list implementing services for",
+        exclusive: ["tag"]
+    }), graph: command_1.flags.string({
+        char: "g",
+        description: "The ID of the graph in Apollo Graph Manager for which to list implementing services. Overrides config file if set."
     }) });
 //# sourceMappingURL=list.js.map

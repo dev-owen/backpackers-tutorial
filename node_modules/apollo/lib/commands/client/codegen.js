@@ -27,7 +27,7 @@ class Generate extends Command_1.ClientCommand {
     async run() {
         const { flags: { watch }, args: { output } } = this.parse(Generate);
         let write;
-        const run = () => this.runTasks(({ flags, args, project }) => {
+        const run = () => this.runTasks(({ flags, args, project, config }) => {
             let inferredTarget = "";
             if (["json", "swift", "typescript", "flow", "scala"].includes(flags.target)) {
                 inferredTarget = flags.target;
@@ -53,7 +53,7 @@ class Generate extends Command_1.ClientCommand {
                     task: async (ctx, task) => {
                         task.title = `Generating query files with '${inferredTarget}' target`;
                         const schema = await project.resolveSchema({
-                            tag: flags.tag
+                            tag: config.variant
                         });
                         if (!schema)
                             throw new Error("Error loading schema");
