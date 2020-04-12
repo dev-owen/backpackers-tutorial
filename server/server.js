@@ -22,6 +22,10 @@ const server = restify.createServer({
     },
 });
 
+// Initialize the database
+const Database = require('./app/configs/database');
+new Database(config.mongo.port, config.mongo.host, config.mongo.name);
+
 // Set API versioning and allow trailing slashes
 server.pre(restify.pre.sanitizePath());
 server.pre(versioning({ prefix: '/' }));

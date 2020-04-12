@@ -8,6 +8,6 @@ module.exports = joi
         username: joi.string().alphanum().min(4).max(15).required(),
         email: joi.string().required(),
         country: joi.string().required(),
-        introduction: joi.string.max(200).required(),
+        introduction: joi.string().max(200).required(),
     })
     .required();
